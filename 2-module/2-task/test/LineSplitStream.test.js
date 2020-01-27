@@ -6,7 +6,7 @@ const os = require('os');
 describe('2-module-2-task', () => {
   describe('LineSplitStream', () => {
     it('стрим разбивает данные по строкам', (done) => {
-      const lines = new LineSplitStream({ encoding: 'utf-8' });
+      const lines = new LineSplitStream({encoding: 'utf-8'});
 
       const onData = sinon.spy();
 
@@ -24,7 +24,7 @@ describe('2-module-2-task', () => {
     });
 
     it('стрим корректно передает данные даже если чанк не завершается переводом строки', (done) => {
-      const lines = new LineSplitStream({ encoding: 'utf-8' });
+      const lines = new LineSplitStream({encoding: 'utf-8'});
 
       const onData = sinon.spy();
 
