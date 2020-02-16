@@ -31,6 +31,10 @@ app.use(async (ctx, next) => {
 app.use((ctx, next) => {
   ctx.login = async function(user) {
     const token = uuid();
+    const session = await Session.findOne({ token }).populate('user');
+    if (!session) {
+      const newSession = await Session.create({ token, lastVisit: new Date(), user });
+    }
 
     return token;
   };
@@ -42,8 +46,18 @@ const router = new Router({prefix: '/api'});
 
 router.use(async (ctx, next) => {
   const header = ctx.request.get('Authorization');
-  if (!header) return next();
-
+  if (!header) {
+    ctx.error = 'Пользователь не залогинен';
+    return next();
+  }
+  const token = header.split(' ')[1];
+  const session = await Session.findOne({ token }).populate('user');
+  if (session) {
+    ctx.user = session.user;
+    await session.update({ lastVisit: new Date() });
+  } else {
+    ctx.error = 'Неверный аутентификационный токен';
+  }
   return next();
 });
 
